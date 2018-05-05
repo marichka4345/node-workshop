@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const Device = require('../models/device');
+const fetchUrl = require('fetch').fetchUrl;
 
 let counter = 2;
 
@@ -43,13 +44,18 @@ router.delete('/:id', async (req, res) => {
 });
 
 router.post('/:id', async (req, res) => {
-  isOn = req.body.isOn;
+  const isOn = req.body.isOn;
+  const id = req.params.id;
 
-  Device.findByIdAndUpdate(req.params.id, {
-    isOn
-  }).exec();
+  const device = await Device.findById(id);
+  const command = '/cm?cmnd=' + (isOn ? 'Power On' : 'Power off');
 
-  res.sendStatus(200);
+  fetchUrl(device.address + command, async (err, meta, body) => {
+    device.isOn = isOn;
+    await device.save();
+
+    res.sendStatus(200);
+  });
 })
 
 module.exports = router;
