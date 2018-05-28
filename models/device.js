@@ -1,9 +1,14 @@
 const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
 
-const Device = mongoose.model('Device', {
+const DeviceSchema = new Schema({
   name: String,
   address: String,
   isOn: Boolean
 });
+const Device = mongoose.model('Device', DeviceSchema);
 
-module.exports = Device;
+module.exports = {
+  device: Device,
+  deviceSchema: DeviceSchema
+};

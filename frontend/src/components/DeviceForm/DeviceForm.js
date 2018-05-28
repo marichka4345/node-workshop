@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 
-class Form extends Component {
+import './deviceForm.css';
+
+class DeviceForm extends Component {
     state = {ipValue: '', nameValue: ''};
 
     submit = (event) => {
@@ -22,7 +24,7 @@ class Form extends Component {
     }
     render() {
         return (
-            <form className="form-inline">
+            <form className="form-inline add-item-form">
                 <div className="form-group mb-2">
                     <label htmlFor="deviceName" className="sr-only">Device Name</label>
                     <input type="text" className="form-control" id="deviceName" placeholder="Device Name"
@@ -39,4 +41,4 @@ class Form extends Component {
     }
 }
 
-export default Form;
+export default DeviceForm;

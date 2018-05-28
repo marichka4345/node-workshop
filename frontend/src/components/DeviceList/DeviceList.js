@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 
-class List extends Component {
+class DeviceList extends Component {
     renderDevice(index) {
         const device = this.props.devices[index];
         let offBtnClassName;
@@ -22,8 +22,8 @@ class List extends Component {
                 <td>
                     <div className="btn-toolbar float-right" role="toolbar">
                         <div className="btn-group mr-2" role="group">
-                            <button type="button" className={onBtnClassName} onClick={this.onUpdateStatus.bind(this, device.id, true)}>On</button>
-                            <button type="button" className={offBtnClassName} onClick={this.onUpdateStatus.bind(this, device.id, false)}>Off</button>
+                            <button type="button" className={onBtnClassName} onClick={() => this.onUpdateStatus(device.id, true)}>On</button>
+                            <button type="button" className={offBtnClassName} onClick={ () => this.onUpdateStatus(device.id, false) }>Off</button>
                         </div>
                         <div className="btn-group" role="group">
                             <button type="button" className="btn btn-outline-warning" onClick={() => this.props.onDelete(device.id)}>Delete</button>
@@ -49,21 +49,28 @@ class List extends Component {
         const devices = this.props.devices.map((device, index) => this.renderDevice(index));
 
         return (
-            <table className="table">
-                <thead>
-                    <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">Device Name</th>
-                        <th scope="col">Device Address</th>
-                        <th scope="col">Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    { devices }
-                </tbody>
-            </table>
+            <Fragment>
+                <h2>Devices</h2>
+                {
+                    devices.length > 0
+                    ? <table className="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Device Name</th>
+                                <th scope="col">Device Address</th>
+                                <th scope="col">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            { devices }
+                        </tbody>
+                    </table>
+                    : <p>There are no devices yet</p>
+                }
+            </Fragment>
         );
     }
 }
 
-export default List;
+export default DeviceList;
