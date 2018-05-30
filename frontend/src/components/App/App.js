@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import axios from 'axios';
 
 import  DeviceList  from '../DeviceList/DeviceList';
 import DeviceForm from '../DeviceForm/DeviceForm';
@@ -7,6 +8,11 @@ import GroupForm from '../GroupForm/GroupForm';
 import Loader from '../Loader/Loader';
 
 import './App.css';
+
+const FETCH_URL = {
+  devices: '/api/device',
+  groups: '/api/group'
+};
 
 export default class App extends Component {
   state = {
@@ -21,43 +27,30 @@ export default class App extends Component {
     this.refreshGroups();
   }
 
-  refreshDevices = () =>  {
-    this.setState({ deviceListIsLoading: true });
+  refreshItems = (isLoadingIndicator, items) => {
+    this.setState({ [isLoadingIndicator]: true });
 
-    fetch('/api/device')
-      .then(res => res.json())
-      .then((res) => this.setState({
-        devices: res,
-        deviceListIsLoading: false
-      }));
+    axios.get(FETCH_URL[items])
+        .then(({ data }) => this.setState({
+          [items]: data,
+          [isLoadingIndicator]: false
+        }));
   };
 
-  refreshGroups = () =>  {
-    this.setState({ groupListIsLoading: true });
+  refreshDevices = () =>  this.refreshItems('deviceListIsLoading', 'devices');
+  refreshGroups = () =>  this.refreshItems('groupListIsLoading', 'groups');
 
-    fetch('/api/group')
-      .then(res => res.json())
-      .then(res => this.setState({
-        groups: res,
-        groupListIsLoading: false
-      }));
-  };
-
-  deleteDevice = (id) => {
-    let requestHeaders = new Headers();
-    requestHeaders.append('Content-Type', 'application/json');
-
-    fetch(`/api/device/${id}`, {
-      method: 'DELETE',
-      headers: requestHeaders
-    }).then(this.refreshDevices);
-  };
+  deleteDevice = (id) => axios.delete(`/api/device/${id}`).then(this.refreshDevices);
   
   render() {
-    const { deviceListIsLoading, groupListIsLoading, devices, groups } = this.state;
+    const {
+      deviceListIsLoading, groupListIsLoading,
+      devices, groups
+    } = this.state;
+
     return (
       <div className="App">
-        <DeviceForm onAdd={this.refreshDevices} />
+        <DeviceForm onAdd={ this.refreshDevices } />
         {
           deviceListIsLoading
           ? <Loader />

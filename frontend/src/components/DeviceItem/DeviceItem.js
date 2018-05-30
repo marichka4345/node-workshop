@@ -15,18 +15,14 @@ export default class DeviceItem extends Component {
   }
 
   addRemoveGroupDevice = () => {
-    const { _id: id } = this.props;
+    const { _id: deviceId } = this.props;
     const { group } = this.state;
 
     this.setState({
       isButtonDisabled: true
     });
 
-    axios.put(`/api/group/${group._id}`, JSON.stringify({ id }), {
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    }).then(() => { 
+    axios.put(`/api/group/${group._id}`, { id: deviceId }).then(() => {
       this.refreshGroup(group); 
       this.setState({
         isButtonDisabled: false
@@ -39,14 +35,14 @@ export default class DeviceItem extends Component {
       .then(res => this.setState({
         group: res.data
       }));
-  }
+  };
 
   isDeviceInGroup = (id) => {
     const groupDevices = this.state.group.devices;
 
     const foundDevice = groupDevices.find(device => device._id === id);
     return !!foundDevice;
-  }
+  };
 
   render() {
     const { name, _id: id } = this.props;

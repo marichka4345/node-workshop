@@ -24,39 +24,49 @@ export default class GroupList extends Component {
   };
 
   onUpdateStatus = async (id, isOn) => {
-    axios.post(`/api/group/${id}`, JSON.stringify({ isOn }), {
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    }).then(() => { 
+    axios.post(`/api/group/${id}`, { isOn }).then(() => {
       this.props.refreshGroups();
       this.props.refreshDevices();
     });
-}
+  };
 
-  renderGroup(index) {
-    const group = this.props.groups[index];
+  renderGroup = (group) => (
+    <tr key={ group._id }>
+      <td>{ group.name }</td>
+      <td>{ group.devices.map(device => <p key={ device._id }>{device.name}</p>) }</td>
+      <td>
+        <div className="btn-toolbar float-left" role="toolbar">
+          <button type="button" className="btn btn-outline-secondary" onClick={ () => this.showModal(group) }>Add/remove device</button>
+        </div>
+        <div className="btn-toolbar float-right" role="toolbar">
+          <OnOffSwitcher item={ { _id: group._id, isOn: group.isOn }} onUpdateStatus={ this.onUpdateStatus } />
+        </div>
+      </td>
+    </tr>
+  );
 
-    return (
-      <tr key={ index + 1 }>
-        <td>{ group.name }</td>
-        <td>{ group.devices.map(device => <p key={ device._id }>{device.name}</p>) }</td>
-        <td>
-          <div className="btn-toolbar float-left" role="toolbar">
-            <button type="button" className="btn btn-outline-secondary" onClick={ () => this.showModal(group) }>Add/remove device</button>
+  renderModal = () => (
+      <Modal>
+        <div className="modal-content">
+          <span className="modal-close" onClick={ this.closeModal }>Close &times;</span>
+          <p>Devices</p>
+          <div className="list-group">
+            {
+              this.props.devices.map(device => <DeviceItem
+                  key={ device._id }
+                  group={ this.state.activeGroup }
+                  {...device} />)
+            }
           </div>
-          <div className="btn-toolbar float-right" role="toolbar">
-            <OnOffSwitcher device={ group } onUpdateStatus={ this.onUpdateStatus } />
-          </div>
-        </td>
-      </tr>
-    );
-  }
+        </div>
+      </Modal>
+  );
 
   render() {
-    const { isModalVisible, activeGroup } = this.state;
-    const { devices } = this.props;
-    const groups = this.props.groups.map((group, index) => this.renderGroup(index));
+    const { isModalVisible } = this.state;
+
+    const groups = this.props.groups.map(group => this.renderGroup(group));
+    const modal = this.renderModal();
 
       return (
         <Fragment>
@@ -78,24 +88,7 @@ export default class GroupList extends Component {
             : <p>There are no groups yet</p>
           }
 
-          {
-            isModalVisible
-            ? <Modal>
-                <div className="modal-content">
-                  <span className="modal-close" onClick={ this.closeModal }>Close &times;</span>
-                  <p>Devices</p>
-                  <div className="list-group">
-                  {
-                    devices.map(device => <DeviceItem
-                      key={device.id}
-                      {...device} 
-                      group={ activeGroup } />)
-                  }
-                  </div>
-                </div>
-              </Modal>
-            : null
-          }
+          { isModalVisible ? modal : null }
         </Fragment>
       );
   }

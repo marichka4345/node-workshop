@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import axios from 'axios';
 
 import './groupForm.css';
 
@@ -9,18 +10,8 @@ export default class GroupForm extends Component {
     event.preventDefault();
 
     const data = this.state;
-    let requestHeaders = new Headers();
-    requestHeaders.append('Content-Type', 'application/json');
-    fetch('/api/group', {
-        method: 'POST',
-        headers: requestHeaders,
-        body: JSON.stringify(data)
-    }).then(() => { this.props.onAdd(); });
-  }
-
-  handleNameChange = (event) => {
-    this.setState({ name: event.target.value });
-  }
+    axios.post('/api/group', data).then(() => { this.props.onAdd(); });
+  };
 
   render() {
     const { name } = this.state;
@@ -35,7 +26,7 @@ export default class GroupForm extends Component {
                     id="groupName"
                     placeholder="Group Name"
                     value={ name }
-                    onChange={ this.handleNameChange } />
+                    onChange={ ({ target }) => this.setState({ name: target.value }) } />
               </div>
               <button type="submit" className="btn btn-primary mb-2" onClick={ this.submit }>Add Group</button>
           </form>
