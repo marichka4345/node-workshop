@@ -11,26 +11,26 @@ router.route('/')
       return;
     }
     
-    const devices = docs.map(doc => ({
-      _id: doc._id,
-      name: doc.name,
-      address: doc.address,
-      isOn: doc.isOn
+    const devices = docs.map(({ _id, name, address, isOn }) => ({
+      _id,
+      name,
+      address,
+      isOn
     }));
     
     res.json(devices);
   })
 })
 .post(async (req, res) => {
-  const device = req.body;
+  const { name, address } = req.body;
 
   await Device.create({
-    name: device.nameValue,
-    address: device.ipValue,
+    name,
+    address,
     isOn: false
   });
 
-  logger.info('New device');
+  logger.info(`New device ${name} was added`);
   res.sendStatus(201);
 });
 
@@ -53,7 +53,8 @@ router.route('/:id')
     fetchUrl(device.address + command, async (err, meta, body) => {
       device.isOn = isOn;
       await device.save();
-  
+
+      logger.info(`Device ${device.name} was ${isOn ? 'turn on' : 'turn off'}`);
       res.sendStatus(200);
     });
   });

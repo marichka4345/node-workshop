@@ -5,8 +5,8 @@ import './deviceForm.css';
 
 class DeviceForm extends Component {
     state = {
-      ipValue: '',
-      nameValue: ''
+      address: '',
+      name: ''
     };
 
     submit = (event) => {
@@ -25,8 +25,8 @@ class DeviceForm extends Component {
                 className="form-control"
                 id="deviceName"
                 placeholder="Device Name"
-                value={ this.state.nameValue }
-                onChange={ ({ target }) => this.setState({ nameValue: target.value })} />
+                value={ this.state.name }
+                onChange={ ({ target }) => this.setState({ name: target.value })} />
         </div>
         <div className="form-group mx-sm-3 mb-2">
             <label htmlFor="deviceAddress" className="sr-only">IP Address</label>
@@ -35,10 +35,10 @@ class DeviceForm extends Component {
                 className="form-control"
                 id="deviceAddress"
                 placeholder="IP Address"
-                value={ this.state.ipValue }
-                onChange={ ({ target }) => this.setState({ ipValue: target.value }) } />
+                value={ this.state.address }
+                onChange={ ({ target }) => this.setState({ address: target.value }) } />
         </div>
-        <button type="submit" className="btn btn-primary mb-2" onClick={this.submit}>Add Device</button>
+        <button type="submit" className="btn btn-primary mb-2" onClick={ this.submit }>Add Device</button>
         </form>
         );
     }

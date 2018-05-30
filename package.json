@@ -14,7 +14,7 @@
     "fetch": "^1.1.0",
     "mongoose": "^5.0.17",
     "winston": "^2.4.2",
-    "winston-mongodb": "^4.0.0-rc1"
+    "winston-mongodb": "3.0.1"
   },
   "devDependencies": {
     "nodemon": "^1.17.3"
