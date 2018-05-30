@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const Device = require('../models/device').device;
 const fetchUrl = require('fetch').fetchUrl;
+const logger = require('../logger');
 
 router.route('/')
 .get((req, res) => {
@@ -27,8 +28,9 @@ router.route('/')
     name: device.nameValue,
     address: device.ipValue,
     isOn: false
-  })
+  });
 
+  logger.info('New device');
   res.sendStatus(201);
 });
 
