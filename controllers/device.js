@@ -11,7 +11,7 @@ router.route('/')
     }
     
     const devices = docs.map(doc => ({
-      id: doc._id,
+      _id: doc._id,
       name: doc.name,
       address: doc.address,
       isOn: doc.isOn

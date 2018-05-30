@@ -1,19 +1,38 @@
 import React, { Component, Fragment } from 'react';
+import axios from 'axios';
 
 import Modal from '../Modal/Modal';
 import DeviceItem from '../DeviceItem/DeviceItem';
+import OnOffSwitcher from '../OnOffSwitcher/OnOffSwitcher';
 
 export default class GroupList extends Component {
   state = {
     isModalVisible: false
   };
 
-  showModal = (group) => {
+  showModal = (group) => this.setState({
+    isModalVisible: true,
+    activeGroup: group
+  });
+
+  closeModal = () => {
     this.setState({
-      isModalVisible: true,
-      activeGroup: group
+      isModalVisible: false
     });
+
+    this.props.refreshGroups();
   };
+
+  onUpdateStatus = async (id, isOn) => {
+    axios.post(`/api/group/${id}`, JSON.stringify({ isOn }), {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }).then(() => { 
+      this.props.refreshGroups();
+      this.props.refreshDevices();
+    });
+}
 
   renderGroup(index) {
     const group = this.props.groups[index];
@@ -21,16 +40,13 @@ export default class GroupList extends Component {
     return (
       <tr key={ index + 1 }>
         <td>{ group.name }</td>
-        <td>{ group.devices.map(device => <p>{device.name}</p>) }</td>
+        <td>{ group.devices.map(device => <p key={ device._id }>{device.name}</p>) }</td>
         <td>
           <div className="btn-toolbar float-left" role="toolbar">
             <button type="button" className="btn btn-outline-secondary" onClick={ () => this.showModal(group) }>Add/remove device</button>
           </div>
           <div className="btn-toolbar float-right" role="toolbar">
-            <div className="btn-group mr-2" role="group">
-              <button type="button">On</button>
-              <button type="button">Off</button>
-            </div>
+            <OnOffSwitcher device={ group } onUpdateStatus={ this.onUpdateStatus } />
           </div>
         </td>
       </tr>
@@ -66,6 +82,7 @@ export default class GroupList extends Component {
             isModalVisible
             ? <Modal>
                 <div className="modal-content">
+                  <span className="modal-close" onClick={ this.closeModal }>Close &times;</span>
                   <p>Devices</p>
                   <div className="list-group">
                   {

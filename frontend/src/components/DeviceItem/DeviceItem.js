@@ -15,14 +15,13 @@ export default class DeviceItem extends Component {
   }
 
   addRemoveGroupDevice = () => {
-    const { id, refreshGroup } = this.props;
+    const { _id: id } = this.props;
     const { group } = this.state;
 
     this.setState({
       isButtonDisabled: true
     });
 
-    console.log('group ', group);
     axios.put(`/api/group/${group._id}`, JSON.stringify({ id }), {
       headers: {
         'Content-Type': 'application/json'
@@ -50,7 +49,7 @@ export default class DeviceItem extends Component {
   }
 
   render() {
-    const { name, id } = this.props;
+    const { name, _id: id } = this.props;
     const { isButtonDisabled }= this.state;
 
     return (<div className="list-group-item device-item">

@@ -62,16 +62,20 @@ export default class App extends Component {
           deviceListIsLoading
           ? <Loader />
           : <DeviceList
-            devices={ devices }
-            onDelete={ this.deleteDevice }
-            onUpdate={ this.refreshDevices }/>
+              devices={ devices }
+              onDelete={ this.deleteDevice }
+              onUpdate={ this.refreshDevices }/>
         }
 
         <GroupForm onAdd={ this.refreshGroups } />
         {
           groupListIsLoading
           ? <Loader />
-          : <GroupList groups={ groups } devices={ devices } />
+          : <GroupList
+              groups={ groups }
+              devices={ devices }
+              refreshGroups={ this.refreshGroups }
+              refreshDevices={ this.refreshDevices }/>
         }
       </div>
     );

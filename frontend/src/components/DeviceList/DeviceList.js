@@ -1,30 +1,19 @@
 import React, { Component, Fragment } from 'react';
 
+import OnOffSwitcher from '../OnOffSwitcher/OnOffSwitcher';
+
 class DeviceList extends Component {
     renderDevice(index) {
         const device = this.props.devices[index];
-        let offBtnClassName;
-        let onBtnClassName;
-
-        if(device.isOn) {
-            offBtnClassName = 'btn btn-outline-secondary';
-            onBtnClassName = 'btn btn-outline-primary active';
-        } else {
-            offBtnClassName = 'btn btn-otline-primary active';
-            onBtnClassName = 'btn btn-outline-secondary';
-        }
 
         return (
             <tr key={ index + 1 }>
-                <th scope="row">{device.id}</th>
+                <th scope="row">{device._id}</th>
                 <td>{device.name}</td>
                 <td>{device.address}</td>
                 <td>
                     <div className="btn-toolbar float-right" role="toolbar">
-                        <div className="btn-group mr-2" role="group">
-                            <button type="button" className={onBtnClassName} onClick={() => this.onUpdateStatus(device.id, true)}>On</button>
-                            <button type="button" className={offBtnClassName} onClick={ () => this.onUpdateStatus(device.id, false) }>Off</button>
-                        </div>
+                        <OnOffSwitcher device={ device } onUpdateStatus={ this.onUpdateStatus } />
                         <div className="btn-group" role="group">
                             <button type="button" className="btn btn-outline-warning" onClick={() => this.props.onDelete(device.id)}>Delete</button>
                         </div>

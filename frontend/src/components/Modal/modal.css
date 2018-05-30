@@ -1,6 +1,7 @@
 .modal-content {
+  position: relative;
   width: 350px;
-  padding: 20px;
+  padding: 30px 20px 20px;
   text-align: center;
   background: white;
 }
@@ -16,4 +17,13 @@
   align-items: center;
   justify-content: center;  
   z-index: 10;
+}
+
+.modal-close {
+  position: absolute;
+  right: 5px;
+  top: 5px;
+  font-size: 16px;
+  letter-spacing: 3px;
+  cursor: pointer;
 }

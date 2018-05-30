@@ -1,7 +1,7 @@
 const router = require('express').Router();
 const DeviceGroup = require('../models/deviceGroup');
 const Device = require('../models/device').device;
-const fetchUrl = require('fetch').fetchUrl;
+const { fetchUrl } = require('fetch');
 
 router.route('/')
 .get((req, res) => {
@@ -39,6 +39,27 @@ router.route('/:id')
 
     DeviceGroup.findById(id, (err, group) => {
       res.json(group);
+    });
+  })
+  .post(async (req, res) => {
+    const isOn = req.body.isOn;
+    const id = req.params.id;
+  
+    const group = await DeviceGroup.findById(id);
+    const command = '/cm?cmnd=' + (isOn ? 'Power On' : 'Power off');
+    const processDevice = async (device) => {
+      const dbDevice = await Device.findById(device._id);
+       
+      await fetchUrl(dbDevice.address + command, () => {});
+      dbDevice.isOn = isOn;
+      await dbDevice.save();
+    };
+
+    const promises = group.devices.map(processDevice);
+    Promise.all(promises).then(() => {
+      group.isOn = isOn;
+      group.save();
+      res.sendStatus(200);
     });
   })
   .put(async (req, res) => {
