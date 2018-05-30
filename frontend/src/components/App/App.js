@@ -5,19 +5,22 @@ import  DeviceList  from '../DeviceList/DeviceList';
 import DeviceForm from '../DeviceForm/DeviceForm';
 import GroupList from '../GroupList/GroupList';
 import GroupForm from '../GroupForm/GroupForm';
+import ActionHistory from '../ActionHistory/ActionHistory';
 import Loader from '../Loader/Loader';
 
 import './App.css';
 
 const FETCH_URL = {
   devices: '/api/device',
-  groups: '/api/group'
+  groups: '/api/group',
+  logs: '/api/log'
 };
 
 export default class App extends Component {
   state = {
     devices: [],
     groups: [],
+    logs: [],
     deviceListIsLoading: true,
     groupListIsLoading: true
   };
@@ -25,6 +28,7 @@ export default class App extends Component {
   componentDidMount() {
     this.refreshDevices();
     this.refreshGroups();
+    this.refreshLogs();
   }
 
   refreshItems = (isLoadingIndicator, items) => {
@@ -37,8 +41,12 @@ export default class App extends Component {
         }));
   };
 
-  refreshDevices = () =>  this.refreshItems('deviceListIsLoading', 'devices');
+  refreshDevices = () =>  {
+    this.refreshItems('deviceListIsLoading', 'devices');
+    this.refreshLogs();
+  };
   refreshGroups = () =>  this.refreshItems('groupListIsLoading', 'groups');
+  refreshLogs = () => this.refreshItems('logsAreLoading', 'logs')
 
   deleteDevice = (id) => axios.delete(`/api/device/${id}`).then(this.refreshDevices);
   deleteGroup = (id) => axios.delete(`/api/group/${id}`).then(this.refreshGroups);
@@ -46,7 +54,7 @@ export default class App extends Component {
   render() {
     const {
       deviceListIsLoading, groupListIsLoading,
-      devices, groups
+      devices, groups, logs
     } = this.state;
 
     return (
@@ -72,6 +80,8 @@ export default class App extends Component {
               refreshGroups={ this.refreshGroups }
               refreshDevices={ this.refreshDevices }/>
         }
+
+        <ActionHistory logs={ logs } />
       </div>
     );
   }
