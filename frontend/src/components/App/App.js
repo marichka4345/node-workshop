@@ -41,6 +41,7 @@ export default class App extends Component {
   refreshGroups = () =>  this.refreshItems('groupListIsLoading', 'groups');
 
   deleteDevice = (id) => axios.delete(`/api/device/${id}`).then(this.refreshDevices);
+  deleteGroup = (id) => axios.delete(`/api/group/${id}`).then(this.refreshGroups);
   
   render() {
     const {
@@ -67,6 +68,7 @@ export default class App extends Component {
           : <GroupList
               groups={ groups }
               devices={ devices }
+              onDelete={ this.deleteGroup }
               refreshGroups={ this.refreshGroups }
               refreshDevices={ this.refreshDevices }/>
         }

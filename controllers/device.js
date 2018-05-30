@@ -37,7 +37,8 @@ router.route('/')
 router.route('/:id')
   .delete(async (req, res) => {
     try {
-      await Device.findByIdAndRemove(req.params.id).exec();
+      const device = await Device.findByIdAndRemove(req.params.id).exec();
+      logger.info(`Device ${device.name} was deleted`);
       res.sendStatus(201);
     } catch(e) {
       res.sendStatus(500);

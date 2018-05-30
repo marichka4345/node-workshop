@@ -89,6 +89,14 @@ router.route('/:id')
   
     await group.save();
     res.sendStatus(200);
+  })
+  .delete(async (req, res) => {
+    try {
+      await DeviceGroup.findByIdAndRemove(req.params.id).exec();
+      res.sendStatus(201);
+    } catch(e) {
+      res.sendStatus(500);
+    }
   });
 
 

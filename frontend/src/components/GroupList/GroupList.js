@@ -40,6 +40,11 @@ export default class GroupList extends Component {
         </div>
         <div className="btn-toolbar float-right" role="toolbar">
           <OnOffSwitcher item={ { _id: group._id, isOn: group.isOn }} onUpdateStatus={ this.onUpdateStatus } />
+          <div className="btn-group" role="group">
+            <button type="button" className="btn btn-outline-warning" onClick={() => this.props.onDelete(group._id)}>
+              Delete
+            </button>
+          </div>
         </div>
       </td>
     </tr>
