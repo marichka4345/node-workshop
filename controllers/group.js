@@ -77,16 +77,23 @@ router.route('/:id')
       deviceIndex = index;
       return device.id === deviceID;
     });
+    const device= await Device.findById(deviceID);
     if (!groupDevice) {
-      const device= await Device.findById(deviceID);
       group.devices = [...group.devices, device];
+      device.groups.push(id);
     } else {
       group.devices = [
         ...group.devices.slice(0, deviceIndex),
         ...group.devices.slice(deviceIndex + 1)
       ];
+      const groupIndex = device.groups.indexOf(id);
+      device.groups = [
+        ...device.groups.slice(0, groupIndex),
+        ...device.groups.slice(groupIndex + 1)
+      ];
     }
-  
+
+    await device.save();
     await group.save();
     res.sendStatus(200);
   })

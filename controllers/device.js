@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const Device = require('../models/device').device;
+const DeviceGroup = require('../models/deviceGroup');
 const fetchUrl = require('fetch').fetchUrl;
 const logger = require('../logger');
 
@@ -38,8 +39,26 @@ router.route('/:id')
   .delete(async (req, res) => {
     try {
       const device = await Device.findByIdAndRemove(req.params.id).exec();
-      logger.info(`Device ${device.name} was deleted`);
-      res.sendStatus(201);
+
+      const deleteGroupDevice = async (groupId) => {
+        const group = await DeviceGroup.findById(groupId);
+        let deviceIndex;
+        group.devices.find((d, index) => {
+          deviceIndex = index;
+          return d._id === device._id;
+        });
+        group.devices = [
+          ...group.devices.slice(0, deviceIndex),
+          ...group.devices.slice(deviceIndex + 1)
+        ];
+        await group.save();
+      };
+      console.log(device.groups);
+      const promises = device.groups.map(deleteGroupDevice);
+      Promise.all(promises).then(() => {
+        logger.info(`Device ${device.name} was deleted`);
+        res.sendStatus(201);
+      });
     } catch(e) {
       res.sendStatus(500);
     }
